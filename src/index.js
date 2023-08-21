@@ -75,7 +75,7 @@ function onSubmit(e) {
 
       refs.pagContainer.classList.remove('is-hidden');
 
-      Notify.success(`Hooray! We found ${images.data.totalHits} images.`);
+      Notify.success(`Success! We found ${images.data.totalHits} images.`);
     }
   });
 
