@@ -70,6 +70,7 @@ function onSubmit(e) {
         apiService.fetchImgFunc().then(images => {
           refs.gallery.innerHTML = renderImageCards(images);
           lightBox.refresh();
+          goUp();
         });
       });
 
@@ -102,6 +103,10 @@ function onLoadMore() {
       );
       console.log(error);
     });
+}
+
+function goUp() {
+  window.scroll(0, 0);
 }
 
 function renderImageCards(images) {
