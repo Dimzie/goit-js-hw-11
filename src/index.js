@@ -40,7 +40,7 @@ function onSubmit(e) {
 
   refs.pagContainer.classList.add('is-hidden');
 
-  apiService.formInput = e.target.elements.searchQuery.value;
+  apiService.formInput = e.target.elements.searchQuery.value.trim();
   apiService.resetPage();
 
   apiService.fetchImgFunc().then(images => {
