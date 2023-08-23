@@ -39,7 +39,14 @@ function onSubmit(e) {
 
   refs.pagContainer.classList.add('is-hidden');
 
-  apiService.formInput = e.target.elements.searchQuery.value.trim();
+  if (e.target.elements.searchQuery.value === '') {
+    Notify.failure(
+      'Please, write a name of looking picture!');
+    return;
+  } else {
+    apiService.formInput = e.target.elements.searchQuery.value.trim();
+  }
+
   apiService.resetPage();
 
   apiService.fetchImgFunc().then(images => {
@@ -61,9 +68,9 @@ function onSubmit(e) {
         visiblePages: 5,
         centerAlign: true,
       });
-
+    
       pagination.reset(images.data.totalHits);
-
+        
       pagination.on('beforeMove', e => {
         pagPage = e.pagPage;
         apiService.fetchImgFunc().then(images => {
@@ -72,36 +79,35 @@ function onSubmit(e) {
           goUp();
         });
       });
-
+    
       refs.pagContainer.classList.remove('is-hidden');
 
-      Notify.success(`Success! We found ${images.data.totalHits} images.`);
+      Notify.success(`Success! We found ${images.data.totalHits} images of ${refs.elements.searchQuery.value}.`);
     }
   });
 
   refs.form.reset();
 }
 
-function onLoadMore() {
-  apiService
-    .fetchImgFunc()
-    .then(images => {
+async function onLoadMore() {
+  try {
+    await apiService
+    .fetchImgFunc(images => {
       totalHitsAmount += images.data.hits.length;
       if (totalHitsAmount === images.data.totalHits) {
+        renderImageCards(images);
+      } else {
+          refs.loadMoreBtn.classList.add('is-hidden');
+          Notify.failure("We're sorry, but you've reached the end of search results.");  
       }
-      renderImageCards(images);
-
+      
       refs.gallery.insertAdjacentHTML('beforeend', renderImageCards(images));
 
       lightBox.refresh();
     })
-    .catch(error => {
-      refs.loadMoreBtn.classList.add('is-hidden');
-      Notify.failure(
-        "We're sorry, but you've reached the end of search results."
-      );
-      console.log(error);
-    });
+  } catch (error) {
+    console.log(error.message);
+  }
 }
 
 function goUp() {
